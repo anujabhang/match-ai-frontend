@@ -22,9 +22,9 @@ export const ProfileSelector = () => {
             I am a Software Engineer
           </div>
         </div>
-      <div className="flex justify-center space-x-4">
-        <button className="bg-red-500 rounded-full text-white p-2"><X size={24}/></button>
-        <button className="bg-green-500 rounded-full text-white p-2"><Heart size={24}/></button>
+      <div className="flex justify-center space-x-6">
+        <button className="bg-red-500 rounded-full text-white p-2 hover:bg-red-700 my-2"><X size={24}/></button>
+        <button className="bg-green-500 rounded-full text-white p-2 hover:bg-green-700 my-2"><Heart size={24}/></button>
       </div>
       </div>
     </div>

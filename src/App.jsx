@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import { Navbar } from './components/Navbar';
 import { ProfileSelector } from './components/ProfileSelector';
+import { MatchesList } from './components/MatchesList';
 
 function App() {
   
@@ -11,7 +12,8 @@ function App() {
   return (
     <>
       <Navbar/>
-      <ProfileSelector/>
+      {/* <ProfileSelector/> */}
+      <MatchesList/>
     </>
   )
 

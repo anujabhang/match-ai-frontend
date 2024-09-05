@@ -6,6 +6,7 @@ import { Navbar } from "./components/Navbar";
 import { ProfileSelector } from "./components/ProfileSelector";
 import { MatchesList } from "./components/MatchesList";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { ChatScreen } from "./components/ChatScreen";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<ProfileSelector />} />
           <Route path="/matches" element={<MatchesList />} />
+          <Route path="/chats" element={<ChatScreen />} />
         </Routes>
       </Router>
     </>

@@ -3,7 +3,7 @@ import { User, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export const Navbar = () => {
-  const [userClicked, setUserClicked] = useState(true);
+  
   return (
     <div className="max-w-md mx-auto">
       <div className="flex justify-between">

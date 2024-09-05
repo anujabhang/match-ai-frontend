@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { X, Heart } from "lucide-react";
+import axios from "axios";
 
 
 
@@ -11,8 +12,25 @@ export const ProfileSelector = () => {
     clicked?setClicked(false):setClicked(true);
   }
 
-  const handleRightSwipe = ()=>{
+  const handleRightSwipe = async ()=>{
     clicked?setClicked(false):setClicked(true);
+
+    const postData = {
+      profileId: profile.id,  // This matches the field in CreateMatchRequest
+    };
+
+    try {
+      const response = await axios.post("http://localhost:8081/matches", postData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      // console.log("Server Response:", response.data);
+      
+    } catch (error) {
+      console.error("Error posting data:", error);
+    }
+
   }
   useEffect(()=>{
     const fetchProfile = async () =>{
@@ -36,7 +54,7 @@ export const ProfileSelector = () => {
             className="rounded-lg"
           />
           <div className="absolute bottom-0 left-0 right-0 text-white p-4 bg-gradient-to-t from-black">
-            <h2 className="text-3xl font-bold">{profile.firstName} {profile.lastName}</h2>
+            <h2 className="text-3xl font-bold">{profile.firstName} {profile.lastName}, {profile.age}</h2>
           </div>
         </div>
         <div className="p-4">

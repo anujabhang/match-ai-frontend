@@ -30,11 +30,11 @@ export const MatchesList = () => {
               imageUrl:
                 "http://localhost:8081/images/f8cb8344-862e-435d-b58a-15e0dcc87ac3.jpg",
               myersBriggsPersonalityType: "INTJ",
-            },
+            }
           ].map((match) => {
             return (
               <li key={match.id} className="hover:bg-slate-200">
-                <button className="flex p-4 ">
+                <button className="flex p-4">
                   <img
                     src={match.imageUrl}
                     alt=""

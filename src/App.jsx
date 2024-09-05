@@ -1,23 +1,26 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { Navbar } from './components/Navbar';
-import { ProfileSelector } from './components/ProfileSelector';
-import { MatchesList } from './components/MatchesList';
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+import { Navbar } from "./components/Navbar";
+import { ProfileSelector } from "./components/ProfileSelector";
+import { MatchesList } from "./components/MatchesList";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 function App() {
-  
-
   return (
     <>
-      <Navbar/>
-      {/* <ProfileSelector/> */}
-      <MatchesList/>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<ProfileSelector />} />
+          <Route path="/matches" element={<MatchesList />} />
+        </Routes>
+      </Router>
     </>
-  )
+  );
 
   //npm install -D stores dependencies into Devdependencies
 }
 
-export default App
+export default App;

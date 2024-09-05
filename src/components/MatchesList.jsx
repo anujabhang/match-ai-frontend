@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { ChatScreen } from "./ChatScreen";
 
 export const MatchesList = () => {
   return (
@@ -33,6 +35,7 @@ export const MatchesList = () => {
             }
           ].map((match) => {
             return (
+                <Link to="/chats">
               <li key={match.id} className="hover:bg-slate-200">
                 <button className="flex p-4">
                   <img
@@ -46,6 +49,8 @@ export const MatchesList = () => {
                   </h1>
                 </button>
               </li>
+              </Link>
+              
             );
           })}
         </ul>

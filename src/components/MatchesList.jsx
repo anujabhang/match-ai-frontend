@@ -28,7 +28,7 @@ export const MatchesList = () => {
         <ul>
           {matches.map((match) => {
             return (
-                <Link key={match.id} to="/chats">
+                <Link key={match.id} to={`/chats/${match.conversationId}`}>
               <li  className="hover:bg-slate-200">
                 <button className="flex p-4">
                   <img

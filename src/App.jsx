@@ -16,7 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<ProfileSelector />} />
           <Route path="/matches" element={<MatchesList />} />
-          <Route path="/chats" element={<ChatScreen />} />
+          <Route path="/chats/:chatId" element={<ChatScreen />} />
         </Routes>
       </Router>
     </>

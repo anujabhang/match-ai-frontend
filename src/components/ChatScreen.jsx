@@ -1,60 +1,49 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { User, Send } from "lucide-react"; // Import the User icon from Lucide
 
 export const ChatScreen = () => {
   const [input, setInput] = useState("");
   const [conversation, setConversation] = useState({});
   const [profile, setProfile] = useState({});
-  const {chatId} = useParams();
+  const { chatId } = useParams();
 
-  const fetchChat = async () =>{
+  const fetchChat = async () => {
     const response = await fetch(`http://localhost:8081/conversations/${chatId}`);
-      const data = await response.json();
-      // console.log("data: ", data);
+    const data = await response.json();
+    setConversation(data);
+  };
 
-      setConversation(data);
-  }
-
-  const fetchProfile = async () =>{
-    if(!conversation?.profileId){
+  const fetchProfile = async () => {
+    if (!conversation?.profileId) {
       return;
     }
     try {
       const response = await fetch(`http://localhost:8081/profile/${conversation?.profileId}`);
       const data = await response.json();
-      
       setProfile(data);
-      // console.log("data: ", profile);
-      
     } catch (error) {
-      // console.log(error);
+      console.error(error);
     }
-    
+  };
 
-  }
-
-
-
-  useEffect(()=>{
+  useEffect(() => {
     fetchChat();
   }, [chatId, conversation]);
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchProfile();
-    
   }, [conversation?.profileId]);
-
 
   const handleSend = async () => {
     if (!input.trim()) {
-      //check if user has entered only spaces
       return;
     }
     const postData = {
-      messageText: input,  // Ensure field names match the server's expected structure
-      time: new Date().toISOString(),  // Send the current time if needed
-      authorId: "user"
+      messageText: input,
+      time: new Date().toISOString(),
+      authorId: "user",
     };
 
     try {
@@ -63,49 +52,76 @@ export const ChatScreen = () => {
           "Content-Type": "application/json",
         },
       });
-      const newMessage = response.data;  // Assuming the server returns the new message
-      setConversation(prevState => ({
+      const newMessage = response.data;
+      setConversation((prevState) => ({
         ...prevState,
-        messages: [...prevState.messages, newMessage]
+        messages: [...prevState.messages, newMessage],
       }));
-      // console.log("Server Response:", response.data);
-      
-      } catch (error) {
+    } catch (error) {
       console.error("Error posting data:", error);
     }
 
-    console.log(input);
-    console.log(conversation?.messages);
-
     setInput("");
   };
+
   return (
-    <div className="mx-60 rounded-lg shadow-lg p-4">
-      <h2 className="text-2xl font-bold mb-4">Chat with {profile.firstName} {profile.lastName}</h2>
-      <div className="h-[50vh] border rounded overflow-y-auto mb-4 p-2">
-        {conversation?.messages?.map((message, index) => {
-          return (
-            <div key={index}>
-              <div className="mb-4 p-2 rounded-lg bg-gray-200">{message.messageText}</div>
-            </div>
-          );
-        })}
-      </div>
-      <div className="flex justify-between">
-        <input
-          type="text"
-          value={input} //value is not what we type e.target.value is what we type
-          //this value we are just using to handleSend
-          onChange={(e) => setInput(e.target.value)}
-          className="border w-11/12 rounded-lg  overflow-y-auto mb-4 p-2"
-          placeholder="Type a message"
-        />
-        <button
-          onClick={handleSend}
-          className="border bg-blue-500 text-white rounded-lg overflow-y-auto mb-4 mx-2 p-2"
-        >
-          Send
-        </button>
+    <div className="min-h-screen flex flex-col items-center justify-between">
+      <div className="w-full max-w-2xl mx-auto rounded-lg shadow-lg p-4 flex flex-col h-[90vh]">
+        <h2 className="text-2xl font-bold mb-4">Chat with {profile.firstName} {profile.lastName}</h2>
+
+        {/* Scrollable chat box */}
+        <div className="flex-grow border rounded-lg overflow-y-auto p-4 mb-4 bg-gray-100">
+          {conversation?.messages?.map((message, index) => {
+            const isProfileMessage = message.authorId === profile.id;
+
+            return (
+              <div key={index} className={`flex items-end mb-4 ${isProfileMessage ? 'justify-end' : 'justify-start'}`}>
+                {/* Show profile image for profile's messages */}
+                {isProfileMessage && (
+                  <img
+                    src={`http://localhost:8081/images/${profile.imageUrl}`}
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full mr-2"
+                  />
+                )}
+
+                <div
+                  className={`p-3 max-w-xs rounded-xl ${
+                    isProfileMessage
+                      ? "bg-blue-500 text-white rounded-tr-none"
+                      : "bg-gray-300 text-black rounded-tl-none"
+                  }`}
+                >
+                  {message.messageText}
+                </div>
+
+                {/* Show <User/> icon for other user's messages */}
+                {!isProfileMessage && (
+                  <div className="ml-2">
+                    <User className="w-8 h-8 text-gray-500" /> {/* Use the User icon */}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Input and Send button */}
+        <div className="flex items-center">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="border w-full rounded-lg p-2"
+            placeholder="Type a message"
+          />
+          <button
+            onClick={handleSend}
+            className="border bg-blue-500 text-white rounded-full p-2 ml-2"
+          >
+            <Send/>
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,16 +1,28 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { User, Send } from "lucide-react"; // Import the User icon from Lucide
+import { AuthContext } from "./AuthContext";
 
 export const ChatScreen = () => {
   const [input, setInput] = useState("");
   const [conversation, setConversation] = useState({});
   const [profile, setProfile] = useState({});
   const { chatId } = useParams();
+  const { token, user } = useContext(AuthContext);
+
+  // Redirect to login if not authenticated
+
 
   const fetchChat = async () => {
-    const response = await fetch(`http://localhost:8081/conversations/${chatId}`);
+    const response = await fetch(`http://localhost:8081/conversations/${chatId}`,{
+      headers: {
+        'Authorization': `Bearer ${token}`, // Pass the JWT token in the Authorization header
+        'Content-Type': 'application/json'
+      }
+    }
+      
+    );
     const data = await response.json();
     setConversation(data);
   };
@@ -19,8 +31,16 @@ export const ChatScreen = () => {
     if (!conversation?.profileId) {
       return;
     }
+    console.log("ProfId: ",conversation.profileId)
     try {
-      const response = await fetch(`http://localhost:8081/profile/${conversation?.profileId}`);
+      const response = await fetch(`http://localhost:8081/profile/${conversation?.profileId}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`, // Pass the JWT token in the Authorization header
+            'Content-Type': 'application/json'
+          }
+        }
+      );
       const data = await response.json();
       setProfile(data);
     } catch (error) {
@@ -40,19 +60,28 @@ export const ChatScreen = () => {
     if (!input.trim()) {
       return;
     }
+  
     const postData = {
       messageText: input,
       time: new Date().toISOString(),
-      authorId: "user",
+      authorId: user.id,
     };
-
+  
     try {
-      const response = await axios.post(`http://localhost:8081/conversations/${chatId}`, postData, {
+      const response = await fetch(`http://localhost:8081/conversations/${chatId}`, {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`, // Pass the JWT token in the Authorization header
+          'Content-Type': 'application/json'
         },
+        body: JSON.stringify(postData), // Convert the postData object to a JSON string
       });
-      const newMessage = response.data;
+  
+      if (!response.ok) {
+        throw new Error("Error posting data, status: " + response.status);
+      }
+  
+      const newMessage = await response.json(); // Parse the response data
       setConversation((prevState) => ({
         ...prevState,
         messages: [...prevState.messages, newMessage],
@@ -60,9 +89,10 @@ export const ChatScreen = () => {
     } catch (error) {
       console.error("Error posting data:", error);
     }
-
+  
     setInput("");
   };
+  
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-between">

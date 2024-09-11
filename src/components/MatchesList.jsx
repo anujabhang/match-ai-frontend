@@ -1,18 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChatScreen } from "./ChatScreen";
+import { AuthContext } from "./AuthContext";
 
 export const MatchesList = () => {
+  const { token, user } = useContext(AuthContext);
   const [matches, setMatches] = useState([]);
+
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/login" />;
+  // }
+
   useEffect(()=>{
     const fetchMatches = async () =>{
-      const response = await fetch("http://localhost:8081/matches");
+      const response = await fetch(`http://localhost:8081/${user.id}/matches`, {
+        
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+      });
       const data = await response.json();
       // console.log("data: ", data);
 
       setMatches(data);
       
-
+      console.log(data)
     }
     fetchMatches();
   }, [])
